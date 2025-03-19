@@ -149,7 +149,7 @@ const PostJob = () => {
               </Select>
             )}
           />
-          <AddCompanyDrawer fetchCompanies={fnCompanies} />
+          <AddCompanyDrawer fetchCompanies={fnCompanies} companies={companies} />
         </div>
         {errors.location && (
           <p className="text-red-500">{errors.location.message}</p>

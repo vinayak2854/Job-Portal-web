@@ -22,36 +22,37 @@ const JobCard = ({
   isMyJob = false,
 }) => {
   const [saved, setSaved] = useState(savedInit);
-
+  
   const { user } = useUser();
-
+  
   const { loading: loadingDeleteJob, fn: fnDeleteJob } = useFetch(deleteJob, {
     job_id: job.id,
   });
-
+  
   const {
     loading: loadingSavedJob,
     data: savedJob,
     fn: fnSavedJob,
   } = useFetch(saveJob);
-
+  
   const handleSaveJob = async () => {
     await fnSavedJob({
       user_id: user.id,
       job_id: job.id,
+      alreadySaved: saved // Pass the current saved state
     });
     onJobAction();
   };
-
+  
   const handleDeleteJob = async () => {
     await fnDeleteJob();
     onJobAction();
   };
-
+  
   useEffect(() => {
     if (savedJob !== undefined) setSaved(savedJob?.length > 0);
   }, [savedJob]);
-
+  
   return (
     <Card className="flex flex-col">
       {loadingDeleteJob && (
@@ -78,7 +79,7 @@ const JobCard = ({
           </div>
         </div>
         <hr />
-        {job.description.substring(0, job.description.indexOf("."))}.
+        {job.description.substring(0, job.description.indexOf("."))}
       </CardContent>
       <CardFooter className="flex gap-2">
         <Link to={`/job/${job.id}`} className="flex-1">
