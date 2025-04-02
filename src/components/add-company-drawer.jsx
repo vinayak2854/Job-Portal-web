@@ -16,6 +16,7 @@ import useFetch from "@/hooks/use-fetch";
 import { addNewCompany } from "@/api/apiCompanies";
 import { BarLoader } from "react-spinners";
 import { useEffect, useState } from "react";
+import { PlusCircle } from "lucide-react";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Company name is required" }),
@@ -26,17 +27,19 @@ const schema = z.object({
         file[0] &&
         (file[0].type === "image/png" || file[0].type === "image/jpeg"),
       {
-        message: "Only Images are allowed",
+        message: "Only PNG or JPEG images are allowed",
       }
     ),
 });
 
 const AddCompanyDrawer = ({ fetchCompanies, companies }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
   });
@@ -61,7 +64,7 @@ const AddCompanyDrawer = ({ fetchCompanies, companies }) => {
       return;
     }
 
-    fnAddCompany({
+    await fnAddCompany({
       ...data,
       logo: data.logo[0],
     });
@@ -70,73 +73,78 @@ const AddCompanyDrawer = ({ fetchCompanies, companies }) => {
   useEffect(() => {
     if (dataAddCompany?.length > 0) {
       fetchCompanies();
+      setIsOpen(false);
+      reset();
     }
-  }, [dataAddCompany]);
+  }, [dataAddCompany, fetchCompanies, reset]);
 
   return (
-    <div className="flex justify-center sm:justify-end">
-      <Drawer>
-        <DrawerTrigger>
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            className="w-full sm:w-auto"
-          >
-            Add Company
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent className="w-[90%] sm:w-[400px] mx-auto">
-          <DrawerHeader>
-            <DrawerTitle className="text-lg sm:text-xl">
-              Add a New Company
-            </DrawerTitle>
-          </DrawerHeader>
-          <form className="flex flex-col gap-4 p-4">
-            {/* Company Name */}
-            <Input placeholder="Company name" {...register("name")} />
-
-            {/* Company Logo */}
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger asChild>
+        <Button
+          type="button"
+          size="icon"
+          variant="outline"
+          className="flex-shrink-0 w-10 h-10"
+        >
+          <PlusCircle className="h-5 w-5" />
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent className="w-[90%] sm:w-[400px] mx-auto">
+        <DrawerHeader>
+          <DrawerTitle className="text-lg sm:text-xl font-semibold">
+            Add a New Company
+          </DrawerTitle>
+        </DrawerHeader>
+        <form className="flex flex-col gap-4 p-4">
+          <div className="space-y-2">
             <Input
-              type="file"
-              accept="image/*"
-              className="file:text-gray-500"
-              {...register("logo")}
+              placeholder="Company name"
+              {...register("name")}
+              className="w-full text-base p-6"
             />
-
-            {/* Add Button */}
-            <Button
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-              variant="destructive"
-              className="w-full"
-            >
-              Add
-            </Button>
-          </form>
-          <DrawerFooter className="flex flex-col gap-2 p-4">
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Input
+              type="file"
+              accept="image/png,image/jpeg"
+              className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-100 w-full cursor-pointer"
+              {...register("logo")}
+            />
             {errors.logo && (
               <p className="text-red-500 text-sm">{errors.logo.message}</p>
             )}
-            {errorAddCompany?.message && (
-              <p className="text-red-500 text-sm">{errorAddCompany?.message}</p>
-            )}
-            {loadingAddCompany && <BarLoader width={"100%"} color="#36d7b7" />}
-            <DrawerClose asChild>
-              <Button type="button" variant="secondary">
-                Cancel
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </div>
+          </div>
+
+          {errorAddCompany?.message && (
+            <p className="text-red-500 text-sm">{errorAddCompany?.message}</p>
+          )}
+          {loadingAddCompany && <BarLoader width={"100%"} color="#36d7b7" />}
+
+          <Button
+            type="button"
+            onClick={handleSubmit(onSubmit)}
+            variant="blue"
+            className="w-full"
+            disabled={loadingAddCompany}
+          >
+            Add Company
+          </Button>
+        </form>
+        <DrawerFooter className="sm:flex-row gap-2">
+          <DrawerClose asChild>
+            <Button type="button" variant="outline" className="w-full">
+              Cancel
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
 export default AddCompanyDrawer;
-
-

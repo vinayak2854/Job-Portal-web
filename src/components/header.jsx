@@ -31,12 +31,12 @@ const Header = () => {
 
   return (
     <>
-      <nav className="py-4 flex justify-between items-center">
+      <nav className="py-4 px-4 sm:px-0 flex flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center">
         <Link to="/">
-          <img src="/logo.png" className="h-20" alt="Hirrd Logo" />
+          <img src="/logo.png" className="h-12 sm:h-20" alt="Hirrd Logo" />
         </Link>
 
-        <div className="flex gap-8">
+        <div className="flex flex-wrap gap-4 sm:gap-8 justify-center items-center">
           <SignedOut>
             <Button variant="outline" onClick={() => setShowSignIn(true)}>
               Login
@@ -45,8 +45,11 @@ const Header = () => {
           <SignedIn>
             {user?.unsafeMetadata?.role === "recruiter" && (
               <Link to="/post-job">
-                <Button variant="destructive" className="rounded-full">
-                  <PenBox size={20} className="mr-2" />
+                <Button
+                  variant="destructive"
+                  className="rounded-full whitespace-nowrap"
+                >
+                  <PenBox size={20} className="mr-2 hidden sm:block" />
                   Post a Job
                 </Button>
               </Link>
@@ -54,7 +57,7 @@ const Header = () => {
             <UserButton
               appearance={{
                 elements: {
-                  avatarBox: "w-10 h-10",
+                  avatarBox: "w-8 h-8 sm:w-10 sm:h-10",
                 },
               }}
             >
@@ -78,13 +81,15 @@ const Header = () => {
 
       {showSignIn && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
           onClick={handleOverlayClick}
         >
-          <SignIn
-            signUpForceRedirectUrl="/onboarding"
-            fallbackRedirectUrl="/onboarding"
-          />
+          <div className="w-full max-w-md">
+            <SignIn
+              signUpForceRedirectUrl="/onboarding"
+              fallbackRedirectUrl="/onboarding"
+            />
+          </div>
         </div>
       )}
     </>

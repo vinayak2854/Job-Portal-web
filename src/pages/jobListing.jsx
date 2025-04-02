@@ -73,64 +73,72 @@ const JobListing = () => {
   }
 
   return (
-    <div className="">
-      <h1 className="gradient-title font-extrabold text-6xl sm:text-7xl text-center pb-8">
+    <div className="px-4 sm:px-0">
+      <h1 className="gradient-title font-extrabold text-4xl sm:text-6xl lg:text-7xl text-center pb-8">
         Latest Jobs
       </h1>
       <form
         onSubmit={handleSearch}
-        className="h-14 flex flex-row w-full gap-2 items-center mb-3"
+        className="flex flex-col sm:flex-row w-full gap-2 sm:gap-4 mb-4"
       >
         <Input
           type="text"
           placeholder="Search Jobs by Title.."
           name="search-query"
-          className="h-full flex-1  px-4 text-md"
+          className="flex-1 text-base sm:text-lg p-6"
         />
-        <Button type="submit" className="h-full sm:w-28" variant="blue">
+        <Button type="submit" className="w-full sm:w-auto" variant="blue">
           Search
         </Button>
       </form>
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <Select value={location} onValueChange={(value) => setLocation(value)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by Location" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {State.getStatesOfCountry("IN").map(({ name }) => {
-                return (
-                  <SelectItem key={name} value={name}>
-                    {name}
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <div className="w-full sm:w-1/3">
+          <Select
+            value={location}
+            onValueChange={(value) => setLocation(value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Filter by Location" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {State.getStatesOfCountry("IN").map(({ name }) => {
+                  return (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Select
-          value={company_id}
-          onValueChange={(value) => setCompany_id(value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Filter by Company" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {companies?.map(({ name, id }) => {
-                return (
-                  <SelectItem key={name} value={id}>
-                    {name}
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <div className="w-full sm:w-1/3">
+          <Select
+            value={company_id}
+            onValueChange={(value) => setCompany_id(value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Filter by Company" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {companies?.map(({ name, id }) => {
+                  return (
+                    <SelectItem key={name} value={id}>
+                      {name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
         <Button
-          className="sm:w-1/2"
+          className="w-full sm:w-1/3"
           variant="destructive"
           onClick={clearFilters}
         >
@@ -143,7 +151,7 @@ const JobListing = () => {
       )}
 
       {loadingJobs === false && (
-        <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {jobs?.length ? (
             jobs.map((job) => {
               return (
@@ -155,7 +163,9 @@ const JobListing = () => {
               );
             })
           ) : (
-            <div>No Jobs Found 😢</div>
+            <div className="text-center col-span-full text-lg sm:text-xl">
+              No Jobs Found 😢
+            </div>
           )}
         </div>
       )}

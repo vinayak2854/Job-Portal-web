@@ -93,81 +93,113 @@ const PostJob = () => {
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 p-4 pb-0"
+        className="flex flex-col gap-4 p-4 pb-0 max-w-3xl mx-auto w-full"
       >
-        <Input placeholder="Job Title" {...register("title")} />
-        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
-
-        <Textarea placeholder="Job Description" {...register("description")} />
-        {errors.description && (
-          <p className="text-red-500">{errors.description.message}</p>
-        )}
-
-        <div className="flex gap-4 items-center">
-          <Controller
-            name="location"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Job Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {State.getStatesOfCountry("IN").map(({ name }) => (
-                      <SelectItem key={name} value={name}>
-                        {name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
+        <div className="space-y-2">
+          <Input
+            placeholder="Job Title"
+            {...register("title")}
+            className="w-full text-base sm:text-lg p-6"
           />
-          <Controller
-            name="company_id"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Company">
-                    {field.value
-                      ? companies?.find((com) => com.id === Number(field.value))
-                          ?.name
-                      : "Company"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {companies?.map(({ name, id }) => (
-                      <SelectItem key={name} value={id}>
-                        {name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          />
-          <AddCompanyDrawer fetchCompanies={fnCompanies} companies={companies} />
-        </div>
-        {errors.location && (
-          <p className="text-red-500">{errors.location.message}</p>
-        )}
-        {errors.company_id && (
-          <p className="text-red-500">{errors.company_id.message}</p>
-        )}
-
-        <Controller
-          name="requirements"
-          control={control}
-          render={({ field }) => (
-            <MDEditor value={field.value} onChange={field.onChange} />
+          {errors.title && (
+            <p className="text-red-500">{errors.title.message}</p>
           )}
-        />
-        {errors.requirements && (
-          <p className="text-red-500">{errors.requirements.message}</p>
-        )}
+        </div>
+
+        <div className="space-y-2">
+          <Textarea
+            placeholder="Job Description"
+            {...register("description")}
+            className="min-h-[120px] text-base sm:text-lg p-4"
+          />
+          {errors.description && (
+            <p className="text-red-500">{errors.description.message}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2 w-full">
+            <Controller
+              name="location"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Job Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {State.getStatesOfCountry("IN").map(({ name }) => (
+                        <SelectItem key={name} value={name}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.location && (
+              <p className="text-red-500">{errors.location.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2 w-full">
+            <div className="flex gap-2">
+              <Controller
+                name="company_id"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Company">
+                        {field.value
+                          ? companies?.find(
+                              (com) => com.id === Number(field.value)
+                            )?.name
+                          : "Company"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {companies?.map(({ name, id }) => (
+                          <SelectItem key={name} value={id}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <AddCompanyDrawer
+                fetchCompanies={fnCompanies}
+                companies={companies}
+              />
+            </div>
+            {errors.company_id && (
+              <p className="text-red-500">{errors.company_id.message}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Controller
+            name="requirements"
+            control={control}
+            render={({ field }) => (
+              <MDEditor
+                value={field.value}
+                onChange={field.onChange}
+                className="min-h-[200px]"
+              />
+            )}
+          />
+          {errors.requirements && (
+            <p className="text-red-500">{errors.requirements.message}</p>
+          )}
+        </div>
+
         {errors.errorCreateJob && (
           <p className="text-red-500">{errors?.errorCreateJob?.message}</p>
         )}
@@ -175,7 +207,8 @@ const PostJob = () => {
           <p className="text-red-500">{errorCreateJob?.message}</p>
         )}
         {loadingCreateJob && <BarLoader width={"100%"} color="#36d7b7" />}
-        <Button type="submit" variant="blue" size="lg" className="mt-2">
+
+        <Button type="submit" variant="blue" size="lg" className="mt-4">
           Submit
         </Button>
       </form>
